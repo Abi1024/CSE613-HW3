@@ -1,3 +1,12 @@
-Processor 3 successfully received!
+ProcessorA 3 successfully received!
 9 10 
 13 14 
+ProcessorB 3 successfully received!
+6 8 
+14 16 
+Iteration: 0
+ProcessorA 3 successfully received!
+ProcessorB 3 successfully received!
+Iteration: 1
+796 880 
+1084 1200 
