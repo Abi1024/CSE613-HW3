@@ -1,11 +1,5 @@
 ProcessorA 2 successfully received!
-11 12 
-15 16 
-18 20 
-26 28 
 Iteration: 0
 ProcessorA 2 successfully received!
 ProcessorB 2 successfully received!
 Iteration: 1
-628 712 
-852 968 

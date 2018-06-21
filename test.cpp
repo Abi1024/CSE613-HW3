@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <vector>
 using namespace std;
+ofstream output;
 
 int** alloc_2d_init(int rows, int cols) {
     int *data = (int *)malloc(rows*cols*sizeof(int));
@@ -11,6 +12,15 @@ int** alloc_2d_init(int rows, int cols) {
     for (int i=0; i<rows; i++)
         array[i] = &(data[cols*i]);
     return array;
+}
+
+void print2d_vector(int** A, int size){
+  for (int i = 0; i < size; i++){
+    for (int j = 0; j < size; j++){
+      output  << A[i][j] << " ";
+    }
+    output << endl;
+  }
 }
 
 int main(int argc, char* argv[]){
@@ -21,37 +31,27 @@ int main(int argc, char* argv[]){
   ierr = MPI_Comm_rank(MPI_COMM_WORLD,&procid);
   ierr = MPI_Comm_size(MPI_COMM_WORLD,&P);
 
-  ofstream output;
-  output.open("output" + to_string(procid) + ".txt");
+  output.open("err" + to_string(procid) + ".txt");
 
+  int **A;
+  A = alloc_2d_init(size,size);
   if (procid == 0){
-    int **A;
-    A = alloc_2d_init(size,size);
     for (int i = 0; i < size; i++){
       for (int j = 0; j < size; j++){
         A[i][j] = 5;
       }
     }
-    MPI_Send(&(A[0][0]), size*size, MPI_INT, 1, 0, MPI_COMM_WORLD);
-    free(A[0]);
-    free(A);
-  }else if (procid == 1){
-    int **B;
-    B = alloc_2d_init(size,size);
-    MPI_Status status;
-    ierr = MPI_Recv(&(B[0][0]), size*size, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-    if (ierr == MPI_SUCCESS){
-      cout << "Successful receive!" << endl;
-      for (int i = 0 ; i < size; i++){
-        for (int j = 0; j < size; j++){
-          cout << B[i][j] << " ";
-        }
-        cout << endl;
-      }
-    }
-    free(B[0]);
-    free(B);
   }
+
+
+  ierr = MPI_Bcast(&(A[0][0]),size*size,MPI_INT,0,MPI_COMM_WORLD);
+  print2d_vector(A,size);
+
+
+  free(A[0]);
+  free(A);
+
+
   ierr = MPI_Finalize();
   output.close();
 }
