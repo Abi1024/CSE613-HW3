@@ -1,5 +1,1 @@
-ProcessorB 1 successfully received!
-Iteration: 0
-ProcessorA 1 successfully received!
-ProcessorB 1 successfully received!
-Iteration: 1
+NUM PROCESSORS: 1

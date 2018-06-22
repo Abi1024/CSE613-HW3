@@ -1,0 +1,85 @@
+\documentclass[a4paper]{article}
+\usepackage[breaklinks]{hyperref}
+
+\usepackage{titling}
+\usepackage{pgfplotstable,filecontents}
+\usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{enumitem} 
+\usepackage{amsfonts}
+\usepackage{times}
+\usepackage{float}
+\pgfplotsset{compat=1.9}% supress warning
+
+\usepackage{titlesec}
+\setlength{\droptitle}{-10em}   % This is your set screw
+
+\title{\textbf{Spring 2018 CSE613 HW3}}
+\author{Abiyaz Chowdhury\\ StonyBrook ID: 111580554}
+\date{\today}
+
+\parindent 0in
+\parskip 1em
+\titlespacing*{\section}{0pt}{0pt}{-1em}
+
+
+\begin{document}
+\maketitle
+\section*{Task 1: Distributed memory matrix multplication}
+\subsection*{B}
+
+(Note: All time taken is shown in seconds) \\
+(RR: Rotate-rotate) \\
+(RB: Rotate-broadcast) \\
+(BB: Broadcast-broadcast) \\
+\par
+\pgfplotstabletypeset[string type,col sep=comma,
+     columns={Size,1N(RR),1N(RB),1N(BB),4N(RR),4N(RB),4N(BB),16N(RR),16N(RB),16N(BB)},
+    ]{part1B.csv}
+  
+\subsection*{C}
+
+(Note: All time taken is shown in seconds. 16 processors were used per node out of Comet's available 24 (my implementation only works when total processes across all nodes is a power of 4). \\
+(RR: Rotate-rotate) \\
+(RB: Rotate-broadcast) \\
+(BB: Broadcast-broadcast) \\
+\par
+\pgfplotstabletypeset[string type,col sep=comma,
+     columns={Size,1N(RR),1N(RB),1N(BB),4N(RR),4N(RB),4N(BB),16N(RR),16N(RB),16N(BB)},
+    ]{part1C.csv}
+    
+Adding more cores per node speeds up the program by a factor roughly equal to the number of cores added (disregarding the overhead). This makes sense, since the work is being evenly parallized across all processes and the overhead is not too significant compared to the gains in performance for large workloads.
+    
+\subsection*{E}
+(Note: All time taken is shown in seconds. For this part, Rotate-rotate was used, and process 0 created a matrix which was then transmitted in blocks to the processors and then the final result was collected from each processor and combined into a full matrix.)
+
+\par
+\pgfplotstabletypeset[string type,col sep=comma,
+     columns={Size,1N(RR),4N(RR),16N(RR)},
+    ]{part1E.csv}
+    
+\subsection*{F}
+(Note: All time taken is shown in seconds. 16 processors were used per node out of Comet's available 24 (my implementation only works when total processes across all nodes is a power of 4). \\
+\pgfplotstabletypeset[string type,col sep=comma,
+     columns={Size,1N(RR),4N(RR),16N(RR)},
+    ]{part1F.csv}
+  
+\subsection*{G}
+The time it takes is greater when a master node has to distribute blocks to each processor and then gather up the final result into a whole matrix. This is simply because the process of distributing and collecting back the result often takes some time. 
+
+\section*{Task 2: Distributed-shared-memory matrix multiplication}
+
+\subsection*{A}
+The nested-for-loop parallelization was used, where the outermost loop is over $i$ and the innermost loop is over $j$. A parallel-for loop is applied on loop $i$. This modification is done to the rotate-rotate implementations in 1a and 1d. All 24 of Comet's cores are used in each process.
+
+\subsection*{B}
+\pgfplotstabletypeset[string type,col sep=comma,
+     columns={Size,1N(1a),1N(1d),4N(1a),4N(1d),16N(1a),16N(1d)},
+    ]{part2B.csv}
+
+\subsection*{C}
+We actually do expect to see better performance here than in task 1 because task 1 used only 16 cores in each node. Even if all 24 cores were used, I surmise this implementation would still perform better since shared-memory involves less overhead than distributed memory computations, although it may also depend on various other factors such as CPU affinities of the processors involved, and the system architecture.
+
+\end{document}
